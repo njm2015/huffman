@@ -2,13 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct node {
+struct Pair {
 	char letter;
 	int freq;
-}
-
-struct nodelist {
-	node* list;
 }
 
 void usage(char* prog_name) {
@@ -42,8 +38,25 @@ int main(int argc, char* argv[]) {
 			freq_arr[buffer[i]-97]++;
 	}
 
-	for(int i = 0; i < 31; i++)
-		printf("%d\n", freq_arr[i]);
+	int char_count = 0;
+	for(int i = 0; i < 31; i++) {
+		if(freq_arr[i] > 0)
+			char_count++;
+	}
+
+	Pair* list;
+
+	list = (struct Pair*) malloc(sizeof(struct Pair) * char_count + 1);
+
+	for(int i = 0, j = 0; i < 31; i++) {
+		if(freq_arr[i] > 0) {
+			list[j].letter = i + 97;
+			list[j].freq = freq_arr[i];
+			j++;
+		}
+	}
+
+	for(int i = 0; i < char_count; i++)
 
 	free(freq_arr);
 
