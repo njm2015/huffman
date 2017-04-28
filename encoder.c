@@ -7,6 +7,16 @@ typedef struct {
 	int freq;
 }pair;
 
+typedef struct {
+	pair* data;
+	treeNode* left;
+	treeNode* right;
+}treeNode;
+
+typedef struct {
+	treeNode* head;
+}tree;
+
 void usage(char *prog_name) {
 	printf("Enter single line of text  < usage for %s >\n", prog_name);
 	exit(0);
@@ -29,13 +39,40 @@ void *ec_malloc(unsigned int size) {
 	return ptr;
 }
 
-pair *sortNodes(pair *list, size) {
+void swap(pair *list, int a, int b) {
+	pair temp = list[a];
+	list[a] = list[b];
+	list[b] = temp;
+}
 
-	pair sorted_list[size];
+void sortNodesRec(pair *list, int lo, int hi) {
 
-	for(int i = 0; i < size; i++) {
-		sorted_list[i] = 
+	if(lo-hi >= 0)
+		return;
+
+	int pivot = hi;
+	int wall = lo;
+
+	for(int i = lo; i < hi; i++) {
+		if(list[i].freq <= list[pivot].freq) {
+			swap(list, wall, i);
+			wall++;
+		}
+
 	}
+
+	swap(list, wall, pivot);
+
+	sortNodesRec(list, lo, wall-1);
+	sortNodesRec(list, wall+1, hi);
+
+}
+
+void sortNodes(pair *list, int size) {
+	sortNodesRec(list, 0, size-1);
+}
+
+void mergeNode(pair *list, int a, int b) {
 
 }
 
@@ -74,7 +111,9 @@ int main(int argc, char *argv[]) {
 
 	pair *list;
 
-	list = (pair *) malloc(sizeof(pair) * char_count + 1);
+	int list_length = char_count;
+
+	list = (pair *) malloc(sizeof(pair) * list_length + 1);
 
 	int j = 0;
 
@@ -98,10 +137,16 @@ int main(int argc, char *argv[]) {
 		j++;
 	}
 
-	for(int i = 0; i < char_count; i++) {
-		printf("Node %d:\n", i);
-		printf("%c occurs %d times\n\n", list[i].letter, list[i].freq);
+	sortNodes(list, list_length);
+
+	for(int i = 0; i < list_length; i++) {
+		printf("Node:\t%c occurs %d times\n\n", list[i].letter, list[i].freq);
 	}
+
+	tree huff;
+
+
+	
 
 	free(freq_arr);
 	free(buffer);

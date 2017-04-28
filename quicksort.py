@@ -12,24 +12,39 @@ def sort(list, lo, hi):
 	wall = lo
 
 	for x in xrange(lo,hi):
-		if(list[x] < list[pivot]):
-			swap(list, lo, x)
+		if(list[x] <= list[pivot]):
+			swap(list, wall, x)
 			wall += 1
 
 	swap(list, wall, pivot)
 
-	print list
-	#print "lo: %d" % (lo)
-	#print "hi: %d" % (hi)
-	#print "wall: %d" % (wall)
-
-	print "calling sort(list, %d, %d)" % (lo, wall)
 	sort(list, lo, wall-1)
-	print "calling sort(list, %d, %d)" % (wall, hi)
 	sort(list, wall+1, hi)
 
 
+def rev_sort(list, lo, hi):
 
-list = [4,3,2,1,5,0,10,9,6]
+	if(lo-hi >= 0):
+		return
+
+	pivot = hi
+	wall = lo
+
+	for x in xrange(lo,hi):
+		if(list[x] >= list[pivot]):
+			swap(list, wall, x)
+			wall += 1
+
+	swap(list, wall, pivot)
+
+	rev_sort(list, lo, wall-1)
+	rev_sort(list, wall+1, hi)
+
+
+list = [4,3,2,1,5,0,10,9,6,5,4]
+
 sort(list, 0, len(list)-1)
+print list
+
+rev_sort(list, 0, len(list)-1)
 print list
