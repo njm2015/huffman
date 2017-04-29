@@ -9,20 +9,20 @@ typedef struct {
 
 typedef struct {
 	pair* data;
-	treeNode* left;
-	treeNode* right;
+	struct treeNode* left;
+	struct treeNode* right;
 }treeNode;
 
 typedef struct {
 	treeNode* head;
 }tree;
 
-void usage(char *prog_name) {
+void usage(char* prog_name) {
 	printf("Enter single line of text  < usage for %s >\n", prog_name);
 	exit(0);
 }
 
-void fatal(char *message) {
+void fatal(char* message) {
 	char error_message[100];
 
 	strcpy(error_message, "[!!] Fatal Error ");
@@ -31,7 +31,7 @@ void fatal(char *message) {
 	exit(-1);
 }
 
-void *ec_malloc(unsigned int size) {
+void* ec_malloc(unsigned int size) {
 	void *ptr;
 	ptr = malloc(size);
 	if(ptr == NULL)
@@ -39,13 +39,13 @@ void *ec_malloc(unsigned int size) {
 	return ptr;
 }
 
-void swap(pair *list, int a, int b) {
-	pair temp = list[a];
-	list[a] = list[b];
-	list[b] = temp;
+void swap(treeNode* node_list, int a, int b) {
+	treeNode* temp = &node_list[a];
+	node_list[a] = node_list[b];
+	node_list[b] = *temp;
 }
 
-void sortNodesRec(pair *list, int lo, int hi) {
+void sortNodes(treeNode* node_list, int lo, int hi) {
 
 	if(lo-hi >= 0)
 		return;
@@ -54,26 +54,41 @@ void sortNodesRec(pair *list, int lo, int hi) {
 	int wall = lo;
 
 	for(int i = lo; i < hi; i++) {
-		if(list[i].freq <= list[pivot].freq) {
-			swap(list, wall, i);
+		if(node_list[i].data->freq <= node_list[pivot].data->freq) {
+			swap(node_list, wall, i);
 			wall++;
 		}
 
 	}
 
-	swap(list, wall, pivot);
+	swap(node_list, wall, pivot);
 
-	sortNodesRec(list, lo, wall-1);
-	sortNodesRec(list, wall+1, hi);
+	sortNodes(node_list, lo, wall-1);
+	sortNodes(node_list, wall+1, hi);
 
 }
 
-void sortNodes(pair *list, int size) {
-	sortNodesRec(list, 0, size-1);
+int mergeNode(tree* huff, treeNode* node_list, int start_list) {
+	treeNode* parent = (treeNode*) malloc(sizeof(treeNode));
+
+	parent->left = &node_list[start_list];
+	parent->right = &node_list[start_list+1];
+	
+	parent->data->freq = node_list[start_list].data->freq + node_list[start_list+1].data->freq;
+
+	node_list[start_list+1] = *parent;
+
+	return start_list + 1;
 }
 
-void mergeNode(pair *list, int a, int b) {
+treeNode* createNode(pair *list, int a) {
+	treeNode* ret = (treeNode*) malloc(sizeof(treeNode));
+	
+	ret->data = &list[a];
+	ret->left = NULL;
+	ret->right = NULL;
 
+	return ret;
 }
 
 int main(int argc, char *argv[]) {
@@ -81,14 +96,14 @@ int main(int argc, char *argv[]) {
 	if(argc < 2)
 		usage(argv[0]);
 
-	int *freq_arr;
+	int* freq_arr;
 
 	freq_arr = (int *) ec_malloc(sizeof(int) * 30);
 
 	for(int i = 0; i < 30; i++)
 		freq_arr[i] = 0;
 
-	char *buffer;
+	char* buffer;
 
 	buffer = (char *) ec_malloc(sizeof(char) * 80);
 
@@ -109,11 +124,11 @@ int main(int argc, char *argv[]) {
 			char_count++;
 	}
 
-	pair *list;
+	pair* list;
 
 	int list_length = char_count;
 
-	list = (pair *) malloc(sizeof(pair) * list_length + 1);
+	list = (pair*) ec_malloc(sizeof(pair) * list_length + 1);
 
 	int j = 0;
 
@@ -137,20 +152,36 @@ int main(int argc, char *argv[]) {
 		j++;
 	}
 
-	sortNodes(list, list_length);
-
+/*
 	for(int i = 0; i < list_length; i++) {
 		printf("Node:\t%c occurs %d times\n\n", list[i].letter, list[i].freq);
 	}
+*/
+	treeNode* node_list = (treeNode*) ec_malloc(sizeof(treeNode) * list_length);
 
-	tree huff;
+	for(int i = 0; i < list_length; i++) {
+		node_list[i].data = &list[i];
+		node_list[i].left = NULL;
+		node_list[i].right= NULL;
+	}
+/*
+	for(int i = 0; i < list_length; i++) {
+		printf("Node:\t%c occurs %d times\n\n", node_list[i].data->letter, node_list[i].data->freq);
+	}
+*/
 
+	sortNodes(node_list, 0, list_length);
 
-	
+	for(int start_list = 0; start_list < list_length - 1;) {
+		start_list = mergeNode(node_list, start_list);
+		sortNodes(node_list, start_list, list_length);
+	}
+
 
 	free(freq_arr);
 	free(buffer);
 	free(list);
+	free(node_list);
 
 	return 0;
 }
