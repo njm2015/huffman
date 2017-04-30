@@ -73,10 +73,11 @@ int mergeNode(treeNode* node_list, int start_list) {
 
 	pair* temp = (pair*) ec_malloc(sizeof(pair));
 
-	parent->left = &node_list[start_list];
-	parent->right = &node_list[start_list+1];
+	*parent->left = node_list[start_list];
+	*parent->right = node_list[start_list+1];
 
 	temp->freq = node_list[start_list].data->freq + node_list[start_list+1].data->freq;
+	temp->letter = '\0';
 	parent->data = temp;
 
 	node_list[start_list+1] = *parent;
@@ -84,11 +85,42 @@ int mergeNode(treeNode* node_list, int start_list) {
 	return start_list + 1;
 }
 
+void free_tree(treeNode* head) {
+
+	if(head->left == NULL) {
+		printf("here\n");
+		return;
+	}
+
+	free_tree(head->left);
+	free_tree(head->right);
+
+	free(head->left);
+	free(head->right);
+}
+
+void print_tree(treeNode* head) {	
+	if(!head->left) {
+		printf("Node %c with freq %d\n", head->data->letter, head->data->freq);
+		return;
+	}
+
+	print_tree(head->left);
+	print_tree(head->right);
+}
+
+void printNode(treeNode* head) {
+	if(head == NULL)
+		printf("NULL");
+	printf("Node %c with freq %d\n", head->data->letter, head->data->freq);
+}
+
+/*
 char find_letter(treeNode* head, char c) {
 	if(!(head->left))
 		return '\0'; 
 }
-
+*/
 int main(int argc, char *argv[]) {
 
 	if(argc < 2)
@@ -161,12 +193,12 @@ int main(int argc, char *argv[]) {
 		node_list[i].left = NULL;
 		node_list[i].right= NULL;
 	}
-
+/*
 	for(int i = 0; i < list_length; i++) {
 		printf("Node:\t%c occurs %d times\n\n", node_list[i].data->letter, node_list[i].data->freq);
 	}
-
-	printf("\n");
+*/
+	//printf("\n");
 
 	sortNodes(node_list, 0, list_length-1);
 
@@ -176,7 +208,7 @@ int main(int argc, char *argv[]) {
 
 	for(int start_list = 0; start_list < list_length - 1;) {
 		start_list = mergeNode(node_list, start_list);
-		printf("start_list: %d\n", start_list);
+		//printf("start_list: %d\n", start_list);
 		sortNodes(node_list, start_list, list_length-1);
 
 		for(int i = 0; i < list_length; i++)
@@ -188,12 +220,23 @@ int main(int argc, char *argv[]) {
 	tree* huff = (tree*) ec_malloc(sizeof(tree));
 	huff->head = &node_list[list_length-1];
 
+	//printNode(huff->head);
+	//printNode(huff->head->left);
+	printNode(huff->head);
+	printNode(huff->head->right);
+	printNode(huff->head->right->right);
+	if(!huff->head->left->left)
+		printf("not null\n");
 
+	//print_tree(huff->head);
 
 	free(freq_arr);
 	free(buffer);
 	free(list);
 	free(node_list);
+
+	//free_tree(huff->head);
+	//free(huff);
 	
 	return 0;
 }
