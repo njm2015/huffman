@@ -84,14 +84,9 @@ int mergeNode(treeNode* node_list, int start_list) {
 	return start_list + 1;
 }
 
-treeNode* createNode(pair *list, int a) {
-	treeNode* ret = (treeNode*) ec_malloc(sizeof(treeNode));
-	
-	ret->data = &list[a];
-	ret->left = NULL;
-	ret->right = NULL;
-
-	return ret;
+char find_letter(treeNode* head, char c) {
+	if(!(head->left))
+		return '\0'; 
 }
 
 int main(int argc, char *argv[]) {
@@ -192,6 +187,8 @@ int main(int argc, char *argv[]) {
 
 	tree* huff = (tree*) ec_malloc(sizeof(tree));
 	huff->head = &node_list[list_length-1];
+
+
 
 	free(freq_arr);
 	free(buffer);
