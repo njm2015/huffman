@@ -40,9 +40,9 @@ void* ec_malloc(unsigned int size) {
 }
 
 void swap(treeNode* node_list, int a, int b) {
-	treeNode* temp = &node_list[a];
+	treeNode temp = node_list[a];
 	node_list[a] = node_list[b];
-	node_list[b] = *temp;
+	node_list[b] = temp;
 }
 
 void sortNodes(treeNode* node_list, int lo, int hi) {
@@ -69,20 +69,23 @@ void sortNodes(treeNode* node_list, int lo, int hi) {
 
 int mergeNode(treeNode* node_list, int start_list) {
 	
-	treeNode* parent = (treeNode*) malloc(sizeof(treeNode));
-	printf("line 73\n");
+	treeNode* parent = (treeNode*) ec_malloc(sizeof(treeNode));
+
+	pair* temp = (pair*) ec_malloc(sizeof(pair));
+
 	parent->left = &node_list[start_list];
 	parent->right = &node_list[start_list+1];
-	printf("line 76\n");
-	parent->data->freq = node_list[start_list].data->freq + node_list[start_list+1].data->freq;
-	printf("line 78\n");
+
+	temp->freq = node_list[start_list].data->freq + node_list[start_list+1].data->freq;
+	parent->data = temp;
+
 	node_list[start_list+1] = *parent;
 
 	return start_list + 1;
 }
 
 treeNode* createNode(pair *list, int a) {
-	treeNode* ret = (treeNode*) malloc(sizeof(treeNode));
+	treeNode* ret = (treeNode*) ec_malloc(sizeof(treeNode));
 	
 	ret->data = &list[a];
 	ret->left = NULL;
@@ -151,11 +154,11 @@ int main(int argc, char *argv[]) {
 		list[j].freq = freq_arr[27];
 		j++;
 	}
-
+/*
 	for(int i = 0; i < list_length; i++) {
 		printf("Node:\t%c occurs %d times\n\n", list[i].letter, list[i].freq);
 	}
-
+*/
 	treeNode* node_list = (treeNode*) ec_malloc(sizeof(treeNode) * list_length);
 
 	for(int i = 0; i < list_length; i++) {
@@ -168,16 +171,27 @@ int main(int argc, char *argv[]) {
 		printf("Node:\t%c occurs %d times\n\n", node_list[i].data->letter, node_list[i].data->freq);
 	}
 
+	printf("\n");
+
 	sortNodes(node_list, 0, list_length-1);
+
+	for(int i = 0; i < list_length; i++)
+		printf("Node:\t%c occurs %d times\n\n", node_list[i].data->letter, node_list[i].data->freq);
+	printf("\n");
 
 	for(int start_list = 0; start_list < list_length - 1;) {
 		start_list = mergeNode(node_list, start_list);
 		printf("start_list: %d\n", start_list);
 		sortNodes(node_list, start_list, list_length-1);
 
+		for(int i = 0; i < list_length; i++)
+			printf("Node:\t%c occurs %d times\n\n", node_list[i].data->letter, node_list[i].data->freq);
+		printf("\n");
+
 	}
 
-
+	tree* huff = (tree*) ec_malloc(sizeof(tree));
+	huff->head = &node_list[list_length-1];
 
 	free(freq_arr);
 	free(buffer);
