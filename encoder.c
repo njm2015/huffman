@@ -8,7 +8,8 @@ typedef struct pair {
 }pair;
 
 typedef struct treeNode {
-	pair* data;
+	char letter;
+	int freq;
 	struct treeNode* left;
 	struct treeNode* right;
 }treeNode;
@@ -73,8 +74,14 @@ int mergeNode(treeNode* node_list, int start_list) {
 
 	pair* temp = (pair*) ec_malloc(sizeof(pair));
 
-	*parent->left = node_list[start_list];
-	*parent->right = node_list[start_list+1];
+	treeNode* temp1;
+	treeNode* temp2;
+
+	*temp1 = node_list[0];
+	*temp2 = node_list[1];
+
+	parent->left = temp1;
+	parent->right = temp2;
 
 	temp->freq = node_list[start_list].data->freq + node_list[start_list+1].data->freq;
 	temp->letter = '\0';
@@ -189,6 +196,7 @@ int main(int argc, char *argv[]) {
 	treeNode* node_list = (treeNode*) ec_malloc(sizeof(treeNode) * list_length);
 
 	for(int i = 0; i < list_length; i++) {
+		node_list[i].char = list[i].
 		node_list[i].data = &list[i];
 		node_list[i].left = NULL;
 		node_list[i].right= NULL;
