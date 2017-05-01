@@ -25,6 +25,33 @@ void* ec_malloc(unsigned int size) {
 	return ptr;
 }
 
+void initFreqArr(int* freq_arr, size) {
+	for(int i = 0; i < size; i++)
+		freq_arr[i] = 0;
+}
+
+void indexFreq(char* buffer, int* freq_arr) {
+	for(int i = 0; i < (int)strlen(buffer); i++) {
+		if(buffer[i] == '.')
+			freq_arr[26]++;
+		else if(buffer[i] == ' ')
+			freq_arr[27]++;
+		else
+			freq_arr[buffer[i]-97]++;
+	}
+}
+
+int getListLength(int* freq_arr, size) {
+	int list_length = 0;
+
+	for(int i = 0; i < 30; i++) {
+		if(freq_arr[i] > 0)
+			list_length++;
+	}
+
+	return list_length;
+}
+
 void swap(treeNode* node_list[], int a, int b) {
 	treeNode* temp = node_list[a];
 	node_list[a] = node_list[b];
@@ -68,14 +95,14 @@ int mergeNode(treeNode* node_list[], int start_list) {
 	return start_list + 1;
 }
 
-void free_tree(treeNode* head) {
+void freeTree(treeNode* head) {
 
 	if(head->left == NULL) {
 		return;
 	}
 
-	free_tree(head->left);
-	free_tree(head->right);
+	freeTree(head->left);
+	freeTree(head->right);
 
 	free(head->left);
 	free(head->right);
@@ -84,28 +111,27 @@ void free_tree(treeNode* head) {
 void printNode(treeNode* head) {
 	if(head == NULL)
 		printf("NULL");
-	printf("Node %c with freq %d with code %s\n\n", head->letter, head->freq, head->huff_code);
+	printf("Node %c with freq %d\n\n", head->letter, head->freq);
 }
 
-void print_tree(treeNode* head) {	
+void printTree(treeNode* head) {	
 	if(!head->left) {
 		printNode(head);
 		return;
 	}
 
-	print_tree(head->left);
-	print_tree(head->right);
+	printTree(head->left);
+	printTree(head->right);
 }
 
 
-void find_letter(treeNode* head, char c[], pair* code_list) {
+void findLetter(treeNode* head, char c[], pair* code_list) {
 	if(!(head->left)) {
 		int i = 0;
 		while(code_list[i].c != '\0')
 			i++;
 		code_list[i].c = head->letter;
 		strcpy(code_list[i].huff_code, c);
-		strcpy(head->huff_code, c);
 		return;
 	}
 
@@ -118,8 +144,8 @@ void find_letter(treeNode* head, char c[], pair* code_list) {
 	strcat(left, "0");
 	strcat(right, "1");
 
-	find_letter(head->left, left, code_list);
-	find_letter(head->right, right, code_list);
+	findLetter(head->left, left, code_list);
+	findLetter(head->right, right, code_list);
 }
 
 void encode(char* ret_buffer, char* buffer, pair* code_list, int list_length) {

@@ -3,34 +3,24 @@
 #include <string.h>
 #include "tree.h"
 
+#define ARR_SIZE	30
+
 int main(int argc, char *argv[]) {
 
 	if(argc < 2)
 		usage(argv[0]);
 
-	int* freq_arr = (int*) ec_malloc(sizeof(int) * 30);
+	int* freq_arr = (int*) ec_malloc(sizeof(int) * ARR_SIZE);
 
-	for(int i = 0; i < 30; i++)
-		freq_arr[i] = 0;
+	initFreqArr(freq_arr, ARR_SIZE);
 
 	char* buffer = (char*) ec_malloc(sizeof(char) * 80);
 
 	strcpy(buffer, argv[1]);
 
-	for(int i = 0; i < (int)strlen(buffer); i++) {
-		if(buffer[i] == '.')
-			freq_arr[26]++;
-		else if(buffer[i] == ' ')
-			freq_arr[27]++;
-		else
-			freq_arr[buffer[i]-97]++;
-	}
+	indexFreq(buffer, freq_arr);
 
-	int list_length = 0;
-	for(int i = 0; i < 30; i++) {
-		if(freq_arr[i] > 0)
-			list_length++;
-	}
+	int list_length = getListLength(freq_arr, ARR_SIZE)
 
 	treeNode* node_list[list_length];
 
@@ -81,7 +71,7 @@ int main(int argc, char *argv[]) {
 		code_list[i].c = '\0';
 	}
 
-	find_letter(huff->head, "", code_list);
+	findLetter(huff->head, "", code_list);
 
 	char* ret_buffer = (char*) ec_malloc(sizeof(char) * 80);
 
@@ -93,7 +83,7 @@ int main(int argc, char *argv[]) {
 	free(buffer);	
 	free(code_list);
 	free(ret_buffer);
-	free_tree(huff->head);
+	freeTree(huff->head);
 	free(huff);
 
 	return 0;
