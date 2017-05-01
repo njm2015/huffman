@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 
 	indexFreq(buffer, freq_arr);
 
-	int list_length = getListLength(freq_arr, ARR_SIZE)
+	int list_length = getListLength(freq_arr, ARR_SIZE);
 
 	treeNode* node_list[list_length];
 
@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
 	free(code_list);
 	free(ret_buffer);
 	freeTree(huff->head);
+	free(huff->head);
 	free(huff);
 
 	return 0;

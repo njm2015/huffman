@@ -25,7 +25,7 @@ void* ec_malloc(unsigned int size) {
 	return ptr;
 }
 
-void initFreqArr(int* freq_arr, size) {
+void initFreqArr(int* freq_arr, int size) {
 	for(int i = 0; i < size; i++)
 		freq_arr[i] = 0;
 }
@@ -41,7 +41,7 @@ void indexFreq(char* buffer, int* freq_arr) {
 	}
 }
 
-int getListLength(int* freq_arr, size) {
+int getListLength(int* freq_arr, int size) {
 	int list_length = 0;
 
 	for(int i = 0; i < 30; i++) {
@@ -151,7 +151,7 @@ void findLetter(treeNode* head, char c[], pair* code_list) {
 void encode(char* ret_buffer, char* buffer, pair* code_list, int list_length) {
 	for(int i = 0; i < strlen(buffer); i++) {
 
-		char curr_code[10];
+		char curr_code[10] = "";
 
 		for(int k = 0; k < list_length; k++) {
 			if(code_list[k].c == buffer[i])
