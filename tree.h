@@ -1,22 +1,31 @@
 #ifndef TREE_H
 #define TREE_H
 
+typedef struct _pair pair;
 struct _pair {
 	char c;
 	char huff_code[10];
 };
 
+typedef struct _treeNode treeNode;
 struct _treeNode {
 	char letter;
 	int freq;
 	char huff_code[10];
-	struct treeNode* left;
-	struct treeNode* right;
+	treeNode* left;
+	treeNode* right;
 };
 
+typedef struct _tree tree;
 struct _tree {
 	treeNode* head;
 };
+
+void usage(char* prog_name);
+
+void fatal(char* message);
+
+void* ec_malloc(unsigned int size);
 
 void swap(treeNode* node_list[], int a, int b);
 

@@ -3,23 +3,6 @@
 #include <string.h>
 #include "tree.h"
 
-struct _pair {
-	char c;
-	char huff_code[10];
-};
-
-struct _treeNode {
-	char letter;
-	int freq;
-	char huff_code[10];
-	struct treeNode* left;
-	struct treeNode* right;
-};
-
-struct _tree {
-	treeNode* head;
-};
-
 void usage(char* prog_name) {
 	printf("Enter single line of text  < usage for %s >\n", prog_name);
 	exit(0);
