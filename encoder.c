@@ -15,9 +15,18 @@ int main(int argc, char *argv[]) {
 
 	initFreqArr(freq_arr, ARR_SIZE);
 
-	char* buffer = (char*) ec_malloc(sizeof(char) * 80);
+	FILE* fp = fopen(argv[1], "r");
+	if(fp == NULL) {
+		fatal("while opening file.\n");
+	}
 
-	strcpy(buffer, argv[1]);
+	char* buffer = (char*) ec_malloc(sizeof(char) * FILE_SIZE);
+
+	if(fgets(buffer, FILE_SIZE, fp) == NULL) {
+		fatal("while reading file.\n");
+	}
+
+	buffer[strcspn(buffer, "\n")] = 0;
 
 	indexFreq(buffer, freq_arr);
 
@@ -78,7 +87,11 @@ int main(int argc, char *argv[]) {
 
 	encode(ret_buffer, buffer, code_list, list_length);
 
-	printf("Enocded string: %s\n", ret_buffer);
+	printf("Enocded string: %s\n\n", ret_buffer);
+
+	for(int i = 0; i < list_length; i++) {
+		printf("%c has code %s\n", code_list[i].c, code_list[i].huff_code);
+	}
 
 	free(freq_arr);
 	free(buffer);	
@@ -87,6 +100,8 @@ int main(int argc, char *argv[]) {
 	freeTree(huff->head);
 	free(huff->head);
 	free(huff);
+
+	fclose(fp);
 
 	return 0;
 }
