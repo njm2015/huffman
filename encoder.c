@@ -4,6 +4,7 @@
 #include "tree.h"
 
 #define ARR_SIZE	30
+#define FILE_SIZE 	500
 
 int main(int argc, char *argv[]) {
 
